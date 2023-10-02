@@ -60,9 +60,9 @@ export const InputBudget = () => {
     comment: z.string().min(1, { message: "Comment is required" }),
     category: z.string().min(1, { message: "Category is required" }),
     dateExpense: z.string().min(1, { message: "Date is required" }),
-    // amount: z
-    //   .number({ required_error: "Amount is required" })
-    //   .positive({ message: "Amount must be greater than 0" }),
+    amount: z
+      .number({ required_error: "Amount is required" })
+      .positive({ message: "Amount must be greater than 0" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -71,7 +71,7 @@ export const InputBudget = () => {
       comment: "",
       category: "FOOD",
       dateExpense: "",
-      //   amount: 0,
+      amount: 0,
     },
   });
 
@@ -168,7 +168,7 @@ export const InputBudget = () => {
               </FormItem>
             )}
           />
-          {/* <FormField
+          <FormField
             name="amount"
             render={({ field }) => (
               <FormItem className="col-span-3">
@@ -183,7 +183,7 @@ export const InputBudget = () => {
                 </FormControl>
               </FormItem>
             )}
-          /> */}
+          />
           <Button
             className="w-full col-span-12"
             disabled={isLoading}
