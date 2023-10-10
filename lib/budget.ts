@@ -24,7 +24,7 @@ import prismadb from "@/lib/prismadb";
 
 export async function GetBudget() {
   try {
-    console.log("=======================HIT WOI===========================");
+    // console.log("=======================HIT WOI===========================");
     const list = await prismadb.expenses.findMany();
     return { data: list, status: 200 };
   } catch (error) {
@@ -35,4 +35,20 @@ export async function GetBudget() {
       error: error,
     };
   }
+}
+
+export async function SetBudget(values: any) {
+  console.log({values})
+
+  const res = await prismadb.expenses.create({
+    data: {
+      comment: values.comment,
+      dateExpense: values.dateExpense,
+      amount: values.amount,
+      category: values.category,
+      updateAt: new Date()
+    },
+  });
+
+  return res;
 }

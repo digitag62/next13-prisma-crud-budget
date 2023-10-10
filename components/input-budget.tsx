@@ -23,62 +23,59 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import moment from "moment";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const categoryOptions = [
-  {
-    value: "FOOD",
-    label: "FOOD",
-  },
-  {
-    value: "TRANSPORT",
-    label: "TRANSPORT",
-  },
-  {
-    value: "HOUSING",
-    label: "HOUSING",
-  },
-  {
-    value: "ENTERTAINMENT",
-    label: "ENTERTAINMENT",
-  },
-  {
-    value: "DEBT",
-    label: "DEBT",
-  },
-  {
-    value: "SAVINGS",
-    label: "SAVINGS",
-  },
-  {
-    value: "WELLNESS",
-    label: "WELLNESS",
-  },
+  "FOOD",
+  "TRANSPORT",
+  "HOUSING",
+  "ENTERTAINMENT",
+  "DEBT",
+  "SAVINGS",
+  "WELLNESS",
 ];
 
+const formSchema = z.object({
+  comment: z.string().min(1, { message: "Comment is required" }),
+  category: z.enum([
+    "FOOD",
+    "TRANSPORT",
+    "HOUSING",
+    "ENTERTAINMENT",
+    "DEBT",
+    "SAVINGS",
+    "WELLNESS",
+  ]),
+  dateExpense: z.date({ required_error: "A date of birth is required." }),
+  amount: z.coerce.number({ required_error: "Amount is required" }),
+});
+
 export const InputBudget = () => {
-  const formSchema = z.object({
-    comment: z.string().min(1, { message: "Comment is required" }),
-    category: z.string().min(1, { message: "Category is required" }),
-    dateExpense: z.string().min(1, { message: "Date is required" }),
-    amount: z
-      .number({ required_error: "Amount is required" })
-      .positive({ message: "Amount must be greater than 0" }),
-  });
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       comment: "",
       category: "FOOD",
-      dateExpense: "",
+      dateExpense: new Date(),
       amount: 0,
     },
   });
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const res = await axios.post("/api/submit", values)
+      form.reset();
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }finally {
+			router.refresh();
+		}
   };
 
   return (
@@ -120,8 +117,8 @@ export const InputBudget = () => {
                   </FormControl>
                   <SelectContent>
                     {categoryOptions.map((category) => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label}
+                      <SelectItem key={category} value={category}>
+                        {category}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -176,7 +173,6 @@ export const InputBudget = () => {
                   <Input
                     placeholder="Amount"
                     type="number"
-                    min="1"
                     disabled={isLoading}
                     {...field}
                   />

@@ -10,9 +10,21 @@ import {
 } from "@/components/ui/table";
 import { InputBudget } from "@/components/input-budget";
 import { GetBudget } from "@/lib/budget";
+import axios from "axios";
+import prismadb from "@/lib/prismadb";
 
 export default async function Home() {
   const { data } = await GetBudget();
+  // const data = await prismadb.expenses.findMany();
+  
+
+  
+  // const callMe = async () => {https://www.youtube.com/
+  //   const res = await axios.get("/api/hello");
+  //   console.log(res);
+  // }
+  
+  
 
   return (
     <div className="container mt-20">
